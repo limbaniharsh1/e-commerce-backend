@@ -1,0 +1,18 @@
+{
+    const cart = await Cart.findOne({user:userId})
+    const product = await Product.findById(req.productId)
+    const isPresent = await CartItem.findOne({cart:cart._id,product:product._id,userId})
+    if(!isPresent){
+        const cartItem = new CartItem({
+            product:product._id,
+            cart:cart._id,
+            quantity:1,
+            price:product.price,
+            size:req.size,
+            discountedPrice:product.discountedPrice
+        })
+        const createdCartItem =await cartItem.save()
+        cart.cartItems.push(createdCartItem)
+        await cart.save()
+        return "item added to cart"
+}
